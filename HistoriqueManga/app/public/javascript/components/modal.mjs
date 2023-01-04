@@ -1,5 +1,3 @@
-import cards from "./cards.mjs";
-
 export default {
     props : ['styleModal'],
     data () {
@@ -45,7 +43,7 @@ export default {
                 return response.json()
             })
             .then((data) => {
-                console.log(data);
+                this.$emit('save-element', data);
             })
         }
     },
@@ -55,15 +53,14 @@ export default {
          * @returns {array}
          */
         resultDisplay () {
-            console.log(this.result);
+            for(let i = 0; i < this.result.length; i++){
+                if(this.result[i].Poster === 'N/A'){
+                    // Image par défaut
+                    this.result[i].Poster = 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg';
+                }
+            }
             return this.result;
         }
-    },
-    mounted () {
-       console.log(cards);
-    },
-    components: {
-        cards
     },
     template: `
         <!-- The Modal -->

@@ -12,7 +12,24 @@
     <div id="container">
         <!-- TODO : Body pour l'app -->
         <navbaritem  @modal-open="openModal"></navbaritem>
-        <modal v-if="isModalAllowed" @modal-close="closeModal"></modal>
+        <modal v-if="isModalAllowed" @modal-close="closeModal" @save-element="addElement"></modal>
+        <ul class="cards" @save-element="addElement">
+            <li v-for="element in savedElementsDisplay" :key="element.id" class="card">
+                <div class="card">
+                    <img :src="item.Poster" class="card__image" alt="" />
+                    <div class="card__overlay">
+                        <div class="card__header">
+                            <svg class="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>                     
+                            <div class="card__header-text">
+                                <h3 class="card__title">{{item.Title}}</h3>            
+                                <span class="card__status">{{item.Year}}</span>
+                            </div>
+                        </div>
+                        <p class="card__description"><button @click="saveElement(item.imdbID)">Enregistrer</button></p>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
 </body>
 <script type="module" src="/javascript/app.mjs"></script>
