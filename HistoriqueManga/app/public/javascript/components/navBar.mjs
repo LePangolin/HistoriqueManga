@@ -4,6 +4,16 @@ export default {
             search: ''
         }
     },
+    methods: {
+        /**
+         * Emet un signal pour ouvrir la modal
+         * @emits modalSignal
+         * @returns {void} 
+         */
+        modalSignal () {
+            this.$emit('modalOpen')
+        }
+    },
     template: `
         <div class="nav">
             <div class="navBarLogo">
@@ -17,7 +27,7 @@ export default {
                     <i class="fa fa-search"></i>
                 </div>
                 <div class="navbarElemItem">
-                    <i class="fa fa-plus"></i>
+                    <i class="fa fa-plus" @click="modalSignal"></i>
                 </div>
             </div>
         </div>

@@ -1,4 +1,5 @@
 import navbaritem from "./components/navBar.mjs";
+import modal from "./components/modal.mjs";
 
 const app = Vue.createApp({
     data() {
@@ -10,7 +11,8 @@ const app = Vue.createApp({
         // ...
     },
     components: {
-        navbaritem
+        navbaritem,
+        modal
     }
 });
 
