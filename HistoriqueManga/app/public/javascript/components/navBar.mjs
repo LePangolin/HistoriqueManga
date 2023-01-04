@@ -7,11 +7,11 @@ export default {
     methods: {
         /**
          * Emet un signal pour ouvrir la modal
-         * @emits modalSignal
+         * @emits modal-open
          * @returns {void} 
          */
         modalSignal () {
-            this.$emit('modalOpen')
+            this.$emit('modal-open')
         }
     },
     template: `

@@ -5,7 +5,6 @@ const dirname = "./public"
 
 app.use("/javascript", express.static(dirname + '/javascript'));
 app.use("/css", express.static(dirname + '/css'));
-app.use("/html", express.static(dirname + '/html'));
 
 app.get('/', (req, res) => {
     res.sendFile(dirname + '/html/index.html', { root: "." });
