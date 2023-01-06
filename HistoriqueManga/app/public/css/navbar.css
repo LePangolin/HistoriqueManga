@@ -21,7 +21,6 @@
 
 .navbarElemItem input[type="text"]{
     text-decoration: none;
-    color: white;
     border-radius: 5px;
     padding: 0.5rem;    
 }
@@ -35,4 +34,8 @@
     color: orange;
     font-size: 1.5rem;
     cursor: pointer;
+}
+
+.groupe-filtre{
+    margin-right: 10%;
 }

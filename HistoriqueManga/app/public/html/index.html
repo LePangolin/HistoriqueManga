@@ -11,21 +11,34 @@
 <body>
     <div id="container">
         <!-- TODO : Body pour l'app -->
-        <navbaritem  @modal-open="openModal"></navbaritem>
+        <navbaritem  @modal-open="openModal"  @search-element="searchElement"></navbaritem>
         <modal v-if="isModalAllowed" @modal-close="closeModal" @save-element="addElement"></modal>
         <ul class="cards" @save-element="addElement">
-            <li v-for="element in savedElementsDisplay" :key="element.id" class="card">
-                <div class="card">
+            <li v-for="item in savedElementsDisplay" class="card">
+                <div class="card" :style="item.Finished ? 'border: 3px solid green' : null ">
                     <img :src="item.Poster" class="card__image" alt="" />
                     <div class="card__overlay">
                         <div class="card__header">
                             <svg class="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>                     
                             <div class="card__header-text">
-                                <h3 class="card__title">{{item.Title}}</h3>            
+                                <h3 class="card__title">{{item.Title}} <input type="checkbox" @click="changeFinished(item)" :checked="item.Finished"></h3>            
                                 <span class="card__status">{{item.Year}}</span>
                             </div>
                         </div>
-                        <p class="card__description"><button @click="saveElement(item.imdbID)">Enregistrer</button></p>
+                        <p class="card__description">
+                            Épisode actuel : {{item.nbEp}} <br>
+                        </p>
+                        <div class="card__buttons">
+                            <button class="card__button__group bg-green" @click="addEpisode(item)">Ajouter un épisode</button>
+                            <button class="card__button__group bg-red" @click="removeEpisode(item)">Retirer un épisode</button>
+                        </div>
+                        <div v-if="item.Poster == 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg'">
+                            <button class="card__button__group bg-blue" @click="openModalPoster">Ajouter un poster</button>
+                            <modalposter v-if="isModalPosterAllowed" @modal-poster-close="closeModalPoster" @link-element="addPoster" :item="item"></modalposter>
+                        </div>
+                        <div class="card__button">
+                            <button class="card__button" @click="deleteElement(item)">Supprimer</button>
+                        </div>
                     </div>
                 </div>
             </li>

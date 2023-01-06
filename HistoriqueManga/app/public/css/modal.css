@@ -2,7 +2,7 @@
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 1000000000; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -74,4 +74,17 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+}
+
+.modal-content-container-item{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-content-container-item i{
+  color: orange;
+  font-size: 1.5rem;
+  cursor: pointer;
 }

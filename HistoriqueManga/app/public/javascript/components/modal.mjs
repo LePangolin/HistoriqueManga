@@ -1,9 +1,13 @@
+import modalManuel from "./modalManuel.mjs";
+
 export default {
     props : ['styleModal'],
     data () {
         return {
             search: '',
-            result : []
+            result : [],
+            manuel : false,
+            modalTitle : 'Recherche par API',
         }
     },
     methods: {
@@ -45,6 +49,28 @@ export default {
             .then((data) => {
                 this.$emit('save-element', data);
             })
+        },
+        /**
+         * Envoie un signal pour le lien de l'élément manuellement
+         * @param {object} item
+         * @returns {void}
+         * @emits save-element
+         */
+        linkSignal (item) {
+            console.log(item);
+            this.$emit('save-element', item);
+        },
+        /**
+         * Ouvre la modal pour ajouter un élément manuellement
+         * @returns {void}
+         */
+        openModalManuel () {
+            this.manuel = !this.manuel;
+            if(this.manuel){
+                this.modalTitle = "Ajouter un élément manuellement";
+            }else{
+                this.modalTitle = "Recherche par API";
+            }
         }
     },
     computed: {
@@ -62,43 +88,49 @@ export default {
             return this.result;
         }
     },
+    components : {
+        modalmanuel : modalManuel
+    },
     template: `
         <!-- The Modal -->
-        <div id="myModal" class="modal" style="display: block;">
+        <div class="modal" style="display: block;">
         
             <!-- Modal content -->
             <div class="modal-content">
                 <span class="close" @click="closeModal">&times;</span>
                 <div class="modal-content-container">
                     <div class="modal-content-container-item">
-                        <h1>Modal Header</h1>
+                        <h1> <i class="fa fa-arrow-left" @click="openModalManuel"></i>&nbsp;{{modalTitle}}&nbsp;<i class="fa fa-arrow-right" @click="openModalManuel"></i></h1>
                     </div>
-                    <div class="modal-content-container-body">
-                        <div class="modal-content-container-body-item">
-                            <input type="text" placeholder="Search" class="search" v-model="search">
+                    <modalmanuel v-if="manuel" @save-element-manuel="linkSignal"></modalmanuel>
+                    <div v-else>
+                        <div class="modal-content-container-body">
+                            <div class="modal-content-container-body-item">
+                                <input type="text" placeholder="Search" class="search" v-model="search">
+                            </div>
+                            <div class="modal-content-container-body-item">
+                                <i class="fa fa-search" @click="searchElement"></i>
+                            </div>
                         </div>
-                        <div class="modal-content-container-body-item">
-                            <i class="fa fa-search" @click="searchElement"></i>
-                        </div>
-                    </div>
-                    <div class="modal-content-container-result">
-                        <ul class="cards">
-                            <li v-for="item in resultDisplay" :key="item.imdbID">
-                                <div class="card">
-                                    <img :src="item.Poster" class="card__image" alt="" />
-                                    <div class="card__overlay">
-                                        <div class="card__header">
-                                            <svg class="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>                     
-                                            <div class="card__header-text">
-                                                <h3 class="card__title">{{item.Title}}</h3>            
-                                                <span class="card__status">{{item.Year}}</span>
+                        <div class="modal-content-container-result">
+                            <ul class="cards">
+                                <li v-for="item in resultDisplay" :key="item.imdbID">
+                                    <div class="card">
+                                        <img :src="item.Poster" class="card__image" alt="" />
+                                        <div class="card__overlay">
+                                            <div class="card__header">
+                                                <svg class="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>                     
+                                                <div class="card__header-text">
+                                                    <h3 class="card__title">{{item.Title}}</h3>            
+                                                    <span class="card__status">{{item.Year}}</span>
+                                                </div>
                                             </div>
+                                            <p class="card__description"><button @click="saveElement(item.imdbID)">Enregistrer</button></p>
                                         </div>
-                                        <p class="card__description"><button @click="saveElement(item.imdbID)">Enregistrer</button></p>
-                                    </div>
-                                </div>      
-                            </li>
-                        </ul>
+                                    </div>      
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
