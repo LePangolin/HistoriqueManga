@@ -1,14 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const config = require('./conf/config.json');
+const fileUpload = require('express-fileupload');
 const app = express();
+const fs = require('fs');
 const { insertOneElementSaved, findAllElementsSaved, updateOneEpisodeElementSaved, deleteOneElementSaved, updateOnePosterElementSaved, updateFinishedElementSaved } = require('./database/database.js');
 const dirname = "./public"
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(fileUpload());
+
 
 app.use("/javascript", express.static(dirname + '/javascript'));
 app.use("/css", express.static(dirname + '/css'));
+app.use("/images", express.static(dirname + '/images'));
 
 let json = require('./public/json/database.json');
 
@@ -73,6 +79,20 @@ app.post("/api/element/finished", (req, res) => {
     });
 });
 
+
+
+// route for uploading files
+app.post('/upload', (req, res) => {
+    console.log(req);
+    if (!req.body.Poster) {
+        return res.status(400).send({message : 'No files were uploaded.'});
+    }
+    else {
+        let sampleFile = req.body.Poster;
+        // crée un fichier 
+        fs.writeFileSync
+    }
+});
 
 app.get('/', (req, res) => {
     res.sendFile(dirname + '/html/index.html', { root: "." });

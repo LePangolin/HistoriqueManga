@@ -7,42 +7,79 @@
     <link rel="stylesheet" href="/css/navbar.css">
     <link rel="stylesheet" href="/css/modal.css">
     <link rel="stylesheet" href="/css/card.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <div id="container">
         <!-- TODO : Body pour l'app -->
-        <navbaritem  @modal-open="openModal"  @search-element="searchElement"></navbaritem>
-        <modal v-if="isModalAllowed" @modal-close="closeModal" @save-element="addElement"></modal>
-        <ul class="cards" @save-element="addElement">
-            <li v-for="item in savedElementsDisplay" class="card">
-                <div class="card" :style="item.Finished ? 'border: 3px solid green' : null ">
-                    <img :src="item.Poster" class="card__image" alt="" />
-                    <div class="card__overlay">
-                        <div class="card__header">
-                            <svg class="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>                     
-                            <div class="card__header-text">
-                                <h3 class="card__title">{{item.Title}} <input type="checkbox" @click="changeFinished(item)" :checked="item.Finished"></h3>            
-                                <span class="card__status">{{item.Year}}</span>
+        <navbaritem  @modal-open="openModal"  @search-element="searchElement" @filter-element="addFilter"></navbaritem>
+        <modal v-if="isModalAllowed" @modal-close="closeModal" @save-element="addElement" @save-element-manuel="addElement"></modal>
+        <div v-if="savedElementsSerieDisplay.length > 0">
+            <h1 class="un"><span>Anime</span></h1>
+            <ul class="cards" @save-element="addElement">
+                <li v-for="item in savedElementsSerieDisplay" class="card">
+                    <div class="card" :style="item.Finished ? 'border: 3px solid green' : null "  v-if="item.Type == 'series' " >
+                        <img :src="item.Poster" class="card__image" alt="" />
+                        <div class="card__overlay">
+                            <div class="card__header">
+                                <svg class="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>                     
+                                <div class="card__header-text">
+                                    <h3 class="card__title">{{item.Title}} <input type="checkbox" @click="changeFinished(item)" :checked="item.Finished"></h3>            
+                                    <span class="card__status">{{item.Year}}</span>
+                                </div>
+                            </div>
+                            <p class="card__description">
+                                Épisode actuel : {{item.nbEp}} <br>
+                            </p>
+                            <div class="card__buttons">
+                                <button class="card__button__group bg-green" @click="addEpisode(item)">Ajouter un épisode</button>
+                                <button class="card__button__group bg-red" @click="removeEpisode(item)">Retirer un épisode</button>
+                            </div>
+                            <div v-if="item.Poster == 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg'">
+                                <button class="card__button__group bg-blue" @click="openModalPoster">Ajouter un poster</button>
+                                <modalposter v-if="isModalPosterAllowed" @modal-poster-close="closeModalPoster" @link-element="addPoster" :item="item"></modalposter>
+                            </div>
+                            <div class="card__button">
+                                <button class="card__button" @click="deleteElement(item)">Supprimer</button>
                             </div>
                         </div>
-                        <p class="card__description">
-                            Épisode actuel : {{item.nbEp}} <br>
-                        </p>
-                        <div class="card__buttons">
-                            <button class="card__button__group bg-green" @click="addEpisode(item)">Ajouter un épisode</button>
-                            <button class="card__button__group bg-red" @click="removeEpisode(item)">Retirer un épisode</button>
-                        </div>
-                        <div v-if="item.Poster == 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg'">
-                            <button class="card__button__group bg-blue" @click="openModalPoster">Ajouter un poster</button>
-                            <modalposter v-if="isModalPosterAllowed" @modal-poster-close="closeModalPoster" @link-element="addPoster" :item="item"></modalposter>
-                        </div>
-                        <div class="card__button">
-                            <button class="card__button" @click="deleteElement(item)">Supprimer</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div v-if="savedElementsMangaDisplay.length > 0">
+            <h1 class="un"><span>Manga</span></h1>
+            <ul class="cardsManga" @save-element="addElement">
+                <li v-for="item in savedElementsMangaDisplay">
+                    <div class="card" :style="item.Finished ? 'border: 3px solid green' : null "  v-if="item.Type == 'manga' " >
+                        <img :src="item.Poster" class="card__image" alt="" />
+                        <div class="card__overlay">
+                            <div class="card__header">
+                                <svg class="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>                     
+                                <div class="card__header-text">
+                                    <h3 class="card__title">{{item.Title}} <input type="checkbox" @click="changeFinished(item)" :checked="item.Finished"></h3>            
+                                    <span class="card__status">{{item.Year}}</span>
+                                </div>
+                            </div>
+                            <p class="card__description">
+                                Chapitre actuel : {{item.nbEp}} <br>
+                            </p>
+                            <div class="card__buttons">
+                                <button class="card__button__group bg-green" @click="addEpisode(item)">Ajouter un chapitre</button>
+                                <button class="card__button__group bg-red" @click="removeEpisode(item)">Retirer un chapitre</button>
+                            </div>
+                            <div v-if="item.Poster == 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg'">
+                                <button class="card__button__group bg-blue" @click="openModalPoster">Ajouter un poster</button>
+                                <modalposter v-if="isModalPosterAllowed" @modal-poster-close="closeModalPoster" @link-element="addPoster" :item="item"></modalposter>
+                            </div>
+                            <div class="card__button">
+                                <button class="card__button" @click="deleteElement(item)">Supprimer</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </li>
-        </ul>
+                </li>
+            </ul>
+        </div>
     </div>
 </body>
 <script type="module" src="/javascript/app.mjs"></script>

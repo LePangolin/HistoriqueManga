@@ -41,6 +41,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  margin-top: 2rem;
 }
 
 .modal-content-container-body-item {
@@ -87,4 +88,14 @@
   color: orange;
   font-size: 1.5rem;
   cursor: pointer;
+}
+
+select {
+  border-radius: 5px;
+  padding: 0.5rem;
+  border: 2px solid grey;
+}
+
+.groupe-filtre-item {
+  margin-left : 1rem;
 }

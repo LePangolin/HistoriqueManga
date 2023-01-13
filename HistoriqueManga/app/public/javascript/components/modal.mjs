@@ -57,10 +57,9 @@ export default {
          * @emits save-element
          */
         linkSignal (item) {
-            console.log(item);
             this.$emit('save-element', item);
         },
-        /**
+        /** 
          * Ouvre la modal pour ajouter un élément manuellement
          * @returns {void}
          */
@@ -79,6 +78,7 @@ export default {
          * @returns {array}
          */
         resultDisplay () {
+            if(this.result === undefined) return [];
             for(let i = 0; i < this.result.length; i++){
                 if(this.result[i].Poster === 'N/A'){
                     // Image par défaut
@@ -102,7 +102,7 @@ export default {
                     <div class="modal-content-container-item">
                         <h1> <i class="fa fa-arrow-left" @click="openModalManuel"></i>&nbsp;{{modalTitle}}&nbsp;<i class="fa fa-arrow-right" @click="openModalManuel"></i></h1>
                     </div>
-                    <modalmanuel v-if="manuel" @save-element-manuel="linkSignal"></modalmanuel>
+                    <modalmanuel v-if="manuel" @save-element-manuel="linkSignal" ></modalmanuel>
                     <div v-else>
                         <div class="modal-content-container-body">
                             <div class="modal-content-container-body-item">
@@ -114,7 +114,10 @@ export default {
                         </div>
                         <div class="modal-content-container-result">
                             <ul class="cards">
-                                <li v-for="item in resultDisplay" :key="item.imdbID">
+                                <div v-if="resultDisplay.length === 0" class="modal-content-container-result-item">
+                                    <h1>Aucun résultat</h1>
+                                </div>
+                                <li v-else v-for="item in resultDisplay" :key="item.imdbID">
                                     <div class="card">
                                         <img :src="item.Poster" class="card__image" alt="" />
                                         <div class="card__overlay">

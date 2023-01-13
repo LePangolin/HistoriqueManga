@@ -8,7 +8,10 @@ const app = Vue.createApp({
             isModalAllowed: false,
             isModalPosterAllowed: false,
             savedElements: [],
-            search: ''
+            search: '',
+            tableaufiltre: [],
+            typeElement: [],
+            allTypeElement: [],
         }
     },
     methods: {
@@ -48,7 +51,6 @@ const app = Vue.createApp({
                 body: JSON.stringify(element)
             })
         },
-
         /**
          * Ajoute un épisode à un élément
          * @param {object} element
@@ -175,23 +177,112 @@ const app = Vue.createApp({
                     Finished: element.Finished
                 })
             })
-        }
+        },
+        /**
+         * Ajout d'un filtre
+         * @param {string} filtre
+         * @returns {void}
+         */
+        addFilter (filtre) {
+            if(this.tableaufiltre.includes(filtre)) {
+                this.tableaufiltre.splice(this.tableaufiltre.indexOf(filtre), 1);
+            } else {
+                this.tableaufiltre.push(filtre);
+            }
+        },
+        /**
+         * Fonction de tri de tab en fonction d'un paramètre
+         * @param {array} tab
+         * @returns {array}
+         */
+        sortTab (array) {
+            this.typeElement = [];
+            if(this.tableaufiltre.length == 0 && this.search != '') {
+                let tab = array.filter((element) => {
+                    return element.Title.toLowerCase().includes(this.search.toLowerCase());
+                });
+                tab.forEach(element => {
+                    if(!this.typeElement.includes(element.Type)) {
+                        this.typeElement.push(element.Type);
+                    }
+                });
+                return tab;
+            }
+            else if(this.tableaufiltre.length != 0 && this.search == '') {
+                let tab = array
+                for(let i = 0; i < this.tableaufiltre.length; i++) {
+                    switch(this.tableaufiltre[i]) {
+                        case 'Finit':
+                            tab = tab.filter((element) => {
+                                return element.Finished == true;
+                            });
+                        break;
+                    }
+                }
+                tab.forEach(element => {
+                    if(!this.typeElement.includes(element.Type)) {
+                        this.typeElement.push(element.Type);
+                    }
+                });
+                return tab;
+            }
+            else if (this.tableaufiltre.length != 0 && this.search != '') {
+                let tab = this.array.filter((element) => {
+                    return element.Title.toLowerCase().includes(this.search.toLowerCase());
+                })
+
+                // Apply filters on tab with a switch
+                for(let i = 0; i < this.tableaufiltre.length; i++) {
+                    switch(this.tableaufiltre[i]) {
+                        case 'Finit':
+                            tab = tab.filter((element) => {
+                                return element.Finished == true;
+                            });
+                        break;
+                    }
+                }
+                tab.forEach(element => {
+                    if(!this.typeElement.includes(element.Type)) {
+                        this.typeElement.push(element.Type);
+                    }
+                });
+                return tab;  
+            }else{
+                array.forEach(element => {
+                    if(!this.typeElement.includes(element.Type)) {
+                        this.typeElement.push(element.Type);
+                    }
+                });
+                return array;
+            }
+        },
         
     },
     computed : {
         /**
-         * Renvoie les éléments sauvegardés
+         * Renvoie les éléments séries sauvegardés
          * @returns {array}
          */
-        savedElementsDisplay () {
-            if(this.search == '') {
-                return this.savedElements;
-            } else {
-                return this.savedElements.filter((element) => {
-                    return element.Title.toLowerCase().includes(this.search.toLowerCase());
-                })
+        savedElementsSerieDisplay () {
+            if(this.tableaufiltre.includes('manga') && !this.tableaufiltre.includes('series')){
+                return [];
             }
-        }
+            return this.sortTab(this.savedElements.filter((element) => {
+                return element.Type == 'series';
+            }));
+        },
+        /**
+         * Renvoie les éléments manga sauvegardés
+         * @returns {array}
+         */
+        savedElementsMangaDisplay () {
+            if(this.tableaufiltre.includes('series') && !this.tableaufiltre.includes('manga')){
+                return [];
+            }
+            return this.sortTab(this.savedElements.filter((element) => {
+                return element.Type == 'manga';
+            }));
+        },
     },
     mounted () {
         window.onclick = (event) => {
@@ -207,6 +298,13 @@ const app = Vue.createApp({
         })
         .then((data) => {
             this.savedElements = data;
+            this.savedElements.forEach(element => {
+                if(!this.typeElement.includes(element.Type)) {
+                    this.typeElement.push(element.Type);
+                }
+            });
+            this.allTypeElement = this.typeElement;
+            return this.savedElements;
         })
     },
     components: {

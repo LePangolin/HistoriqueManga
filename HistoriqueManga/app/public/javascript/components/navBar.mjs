@@ -1,7 +1,8 @@
 export default {
     data () {
         return {
-            search: ''
+            search: '',
+            tabFilter : [],
         }
     },
     methods: {
@@ -12,6 +13,20 @@ export default {
          */
         modalSignal () {
             this.$emit('modal-open')
+        },
+        /**
+         * Ajoute ou supprime un filtre et émet un signal
+         * @param {string} filter
+         * @returns {void}
+         * @emits filter-element
+         */
+        filterSignal (filter) {
+            this.$emit('filter-element', filter)
+            if (this.tabFilter.includes(filter)) {
+                this.tabFilter.splice(this.tabFilter.indexOf(filter), 1)
+            } else {
+                this.tabFilter.push(filter)
+            }
         }
     },
     watch: {
@@ -26,7 +41,9 @@ export default {
             </div>
             <div class="navbarElem">
                 <div class="navbarElemItem groupe-filtre">
-                    <i class="fa fa-check-square"></i>
+                    <i class="fa fa-check-square groupe-filtre-item" :style="tabFilter.includes('Finit') ? 'color: orange' : 'color: white' " @click="filterSignal('Finit')"></i>
+                    <i class="fa fa-book groupe-filtre-item" :style="tabFilter.includes('manga') ? 'color: orange' : 'color: white' " @click="filterSignal('manga')"></i>
+                    <i class="fa fa-film groupe-filtre-item" :style="tabFilter.includes('series') ? 'color: orange' : 'color: white' " @click="filterSignal('series')"></i>
                 </div>
                 <div class="navbarElemItem">
                     <input type="text" placeholder="Search" class="search" v-model="search">
