@@ -1,6 +1,7 @@
 import navbaritem from "./components/navBar.mjs";
 import modal from "./components/modal.mjs";
 import modalposter from "./components/modalPoster.mjs";
+import star from "./components/star.mjs";
 
 const app = Vue.createApp({
     data() {
@@ -256,6 +257,25 @@ const app = Vue.createApp({
                 return array;
             }
         },
+        /**
+         * Fonction qui met a jour la note d'un élément
+         * @param {int} note
+         * @param {String} title
+         * @returns {void}
+         */
+        updateRate (note, title) {
+            fetch('/api/element/rate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    Title: title,
+                    Rating: note
+                })
+            })
+            .then(response => console.log(response))
+        },  
         
     },
     computed : {
@@ -310,7 +330,8 @@ const app = Vue.createApp({
     components: {
         navbaritem,
         modal,
-        modalposter
+        modalposter,
+        star,
     }
 });
 

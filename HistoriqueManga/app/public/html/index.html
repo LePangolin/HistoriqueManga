@@ -25,7 +25,7 @@
                                 <svg class="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>                     
                                 <div class="card__header-text">
                                     <h3 class="card__title">{{item.Title}} <input type="checkbox" @click="changeFinished(item)" :checked="item.Finished"></h3>            
-                                    <span class="card__status">{{item.Year}}</span>
+                                    <star :rate="item.rate" :title="item.Title" @update-rate="updateRate"></star>
                                 </div>
                             </div>
                             <p class="card__description">

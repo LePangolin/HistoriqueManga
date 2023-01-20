@@ -213,5 +213,40 @@ function updateFinishedElementSaved(Title, status, fn) {
     });
 }
 
+function updateRatingElement(Title, rating, fn) {
+    let error = null;
+    let result = null;
+    MongoClient.connect(url, function (err, db) {
+        if(err){
+            error = err;
+            fn(error, result);
+        }
+        var dbo = db.db("app");
+        dbo.collection("elementSaved").findOne({Title
+        }, function (err, result) {
+            if (err) {
+                error = err;
+                fn(error, result);
+            }
+            if (result == null) {
+                error = "Element doesn't exist";
+                db.close();
+                fn(error, result);
+            } else {
+                dbo.collection("elementSaved").updateOne({Title
+                }, {$set: {rate: rating}}, function (err, res) {
+                    if (err) {
+                        error = err;
+                        fn(error, result);
+                    }
+                    db.close();
+                    result = res;
+                    fn(error, result);
+                });
+            }
+        });
+    });
+}
 
-module.exports = { insertOneElementSaved, findAllElementsSaved, updateOneEpisodeElementSaved, deleteOneElementSaved, updateOnePosterElementSaved, updateFinishedElementSaved };
+
+module.exports = { insertOneElementSaved, findAllElementsSaved, updateOneEpisodeElementSaved, deleteOneElementSaved, updateOnePosterElementSaved, updateFinishedElementSaved, updateRatingElement };

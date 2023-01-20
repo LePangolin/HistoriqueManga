@@ -4,7 +4,7 @@ const config = require('./conf/config.json');
 const fileUpload = require('express-fileupload');
 const app = express();
 const fs = require('fs');
-const { insertOneElementSaved, findAllElementsSaved, updateOneEpisodeElementSaved, deleteOneElementSaved, updateOnePosterElementSaved, updateFinishedElementSaved } = require('./database/database.js');
+const { insertOneElementSaved, findAllElementsSaved, updateOneEpisodeElementSaved, deleteOneElementSaved, updateOnePosterElementSaved, updateFinishedElementSaved, updateRatingElement } = require('./database/database.js');
 const dirname = "./public"
 
 app.use(bodyParser.json());
@@ -79,6 +79,15 @@ app.post("/api/element/finished", (req, res) => {
     });
 });
 
+app.post("/api/element/rate", (req, res) => {
+    updateRatingElement(req.body.Title, req.body.Rating, (error, result) => {
+        if (error) {
+            res.status(400).send(error);
+        } else {
+            res.status(200).send("Element updated");
+        }
+    });
+});
 
 
 // route for uploading files
